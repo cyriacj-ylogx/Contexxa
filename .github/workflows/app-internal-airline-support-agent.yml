@@ -1,0 +1,138 @@
+name:  Build & Deploy
+
+on:
+  push:
+    branches:
+      - airline_support_agent
+
+  # pull_request:
+  #   types: [closed]
+  #   branches:
+  #     - Genisys_adv_gene
+  #     # - dev
+  #     # - qa
+  #     # - prod
+  #   paths:
+  #     - "code/**"
+
+jobs:
+  build-and-deploy:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+
+    env:
+      API_NAME: "app-airline-support-agent"
+      ENV: "internal"
+
+      CONTAINER_REGISTRY_URL: ${{ secrets.CONTAINER_REGISTRY_URL}}
+      CONTAINER_REGISTRY_USERNAME: ${{ secrets.CONTAINER_REGISTRY_USERNAME}}
+      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.CONTAINER_REGISTRY_PASSWORD}}
+
+      AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY}}
+      AZURE_OPENAI_ENDPOINT: "https://rb-aws-access.openai.azure.com"
+      OPENAI_API_VERSION: "2024-12-01-preview"
+      OPENAI_API_TYPE: "azure"
+      AZURE_DEPLOYMENT_NAME: "gpt-4o"
+      
+
+
+      #------------Apps ENV----------------------
+      # DB_PASSWORD: ${{ secrets.DB_PASSWORD}}
+      # DB_NAME: "mdq"
+      # DB_USER: "postgres"
+ 
+      # DB_HOST: "poc-internal-pg.postgres.database.azure.com"
+      # DB_PORT: 5432
+      # DB_SCHEMA: "public"
+
+# API Security
+      # SECRET_KEY: "vB8p1T3BlbkFJlNFJv7HmUa7quLnPihHp"
+      # FRONTEND_URL: https://MDQ.ylogx.io
+      # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY}}
+    #   FLASK_DEBUG: True
+      PORT: 5013
+
+           #DEV
+      #---
+      DEV_CONTAINER_IP_VM: ${{secrets.DEV_CONTAINER_IP_VM}}
+      DEV_CONTAINER_USER_VM: ${{secrets.DEV_CONTAINER_USER_VM}}
+      DEV_CONTAINER_KEY_VM: ${{secrets.DEV_CONTAINER_KEY_VM}}
+      
+
+ 
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set ENV name based on branch
+        id: set-env
+        run: |
+          
+          # echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env
+          #echo "FLASK_DEBUG=${FLASK_DEBUG}" >> .env
+          echo "PORT=${PORT}" >> .env
+
+          echo "AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}" >> .env
+          echo "AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}" >> .env
+          echo "OPENAI_API_VERSION=${OPENAI_API_VERSION}" >> .env
+          echo "OPENAI_API_TYPE=${OPENAI_API_TYPE}" >> .env
+          echo "AZURE_DEPLOYMENT_NAME=${AZURE_DEPLOYMENT_NAME}" >> .env
+          
+          
+          # echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+          # echo "DB_NAME=${DB_NAME}" >> .env
+          # echo "DB_USER=${DB_USER}" >> .env
+          # echo "DB_HOST=${DB_HOST}" >> .env
+          # echo "DB_PORT=${DB_PORT}" >> .env
+          # echo "DB_SCHEMA=${DB_SCHEMA}" >> .env
+          # echo "SECRET_KEY=${SECRET_KEY}" >> .env
+          # echo "FRONTEND_URL=${FRONTEND_URL}" >> .env
+          
+          
+
+      - name: Log in to Azure Container Registry
+        run: |
+          echo "${CONTAINER_REGISTRY_PASSWORD}" | docker login ${CONTAINER_REGISTRY_URL} \
+            -u ${CONTAINER_REGISTRY_USERNAME} --password-stdin
+
+      - name: Docker Build & Push
+        run: |
+          IMAGE=${CONTAINER_REGISTRY_URL}/${API_NAME}-${ENV}:${GITHUB_RUN_NUMBER}
+          echo "Building image: $IMAGE"
+          docker build -f Dockerfile -t $IMAGE .
+        
+          docker push $IMAGE
+
+      - name: Deploy to Azure ContainerVM
+        
+        run: |
+          outfile="dev_container_key.pem"
+          printf '%s\n' "$DEV_CONTAINER_KEY_VM" > "$outfile"
+          chmod 600 "$outfile"
+          echo "Defining image name..."
+          IMAGE=${CONTAINER_REGISTRY_URL}/${API_NAME}-${ENV}:${GITHUB_RUN_NUMBER}
+          KEY_FILE="$outfile"  
+          echo "Running remote deployment on ${DEV_CONTAINER_IP_VM}..."
+          ssh -i "$KEY_FILE" -o StrictHostKeyChecking=no ${DEV_CONTAINER_USER_VM}@${DEV_CONTAINER_IP_VM} << EOF
+            set -e
+
+            echo "Stopping existing container..."
+            docker stop ${API_NAME}-${ENV} || true
+
+            echo "Removing old containers..."
+            docker container prune --force
+
+            echo "Logging in to ACR..."
+            echo "${CONTAINER_REGISTRY_PASSWORD}" | docker login ${CONTAINER_REGISTRY_URL} -u ${CONTAINER_REGISTRY_USERNAME} --password-stdin
+
+            echo "Pulling image: $IMAGE"
+            docker pull $IMAGE
+
+            echo "Running container..."
+            docker run -d -p ${PORT}:5000 --name ${API_NAME}-${ENV} \
+              --restart=always $IMAGE
+
+            echo "Deployment complete."
+          EOF
+      
+      

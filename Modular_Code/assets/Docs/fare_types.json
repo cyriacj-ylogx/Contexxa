@@ -1,0 +1,23 @@
+{
+  "fare_types": [
+    {
+      "name": "Lite",
+      "description": "Basic fare with no free checked baggage. Seat selection charged extra. Changes allowed with fee of INR 3,000. Non-refundable on cancellation.",
+      "refund_policy": "Non-refundable on cancellation.",
+      "price_range": "Lowest"
+    },
+    {
+      "name": "Classic",
+      "description": "Includes one free checked bag up to 15 kg. Seat selection included. Changes allowed with fee of INR 2,000. Non-refundable on cancellation.",
+      "refund_policy": "Non-refundable on cancellation.",
+      "price_range": "Medium"
+    },
+    {
+      "name": "Flexi",
+      "description": "Includes one free checked bag up to 20 kg. Free seat selection. Free date change once. Cancellation refund 75 percent of base fare.",
+      "refund_policy": "Refundable: 75% of base fare on cancellation.",
+      "price_range": "Highest"
+    }
+  ],
+  "notes": "All fares include complimentary water and snacks on flights over 2 hours."
+}

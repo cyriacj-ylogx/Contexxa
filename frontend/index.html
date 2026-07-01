@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="api-url" content="http://localhost:8000">
+    <title>AI Support Agent — Airline Bot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Toast notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebar-toggle" title="Toggle sidebar">
+                <i class="fa-solid fa-angles-right"></i>
+            </button>
+
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <i class="fa-solid fa-plane"></i>
+                </div>
+                <span class="label">AirlineBot</span>
+            </div>
+
+            <a class="sidebar-item active" href="index.html" title="Chat">
+                <i class="fa-solid fa-comments"></i>
+                <span class="label">Chat</span>
+            </a>
+            <a class="sidebar-item" href="upload.html" title="Manage Knowledge Base">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span class="label">Upload</span>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-bottom">
+                <button class="sidebar-item" id="theme-toggle" title="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                    <span class="label">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Chat Area -->
+        <main class="chat-container">
+
+            <!-- Header -->
+            <div class="chat-header">
+                <div class="agent-info">
+                    <div class="agent-avatar">
+                        <i class="fa-solid fa-plane"></i>
+                    </div>
+                    <div>
+                        <div class="agent-name">Airline Support Agent</div>
+                        <div class="agent-status">
+                            <span class="status-dot"></span> Online · AI-powered
+                        </div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="clear-chat-btn" title="Clear conversation">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <a class="icon-btn" href="upload.html" title="Manage Knowledge Base">
+                        <i class="fa-solid fa-database"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="chat-history" id="chat-history">
+                <!-- Empty state shown by script.js on load -->
+            </div>
+
+            <!-- Input -->
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <form id="chat-form" style="display:contents">
+                        <input
+                            type="text"
+                            id="user-input"
+                            placeholder="Ask about flights, baggage, check-in, visas…"
+                            autocomplete="off"
+                            maxlength="2000"
+                        >
+                        <button type="submit" id="send-btn" title="Send (Enter)">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="input-footer">
+                    <span class="char-counter" id="char-counter">0 / 2000</span>
+                    <span class="input-hint">Press <kbd>Enter</kbd> to send</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+    <script src="sidebar.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

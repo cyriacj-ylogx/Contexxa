@@ -1,0 +1,11 @@
+Airport Code,City,Country,Hub Status
+DEL,New Delhi,India,Primary Hub
+BOM,Mumbai,India,Primary Hub
+BLR,Bengaluru,India,Secondary Hub
+MAA,Chennai,India,Secondary Hub
+HYD,Hyderabad,India,Secondary Hub
+CCU,Kolkata,India,Secondary Hub
+DXB,Dubai,UAE,International Hub
+LHR,London,United Kingdom,International Destination
+JFK,New York,United States,International Destination
+SIN,Singapore,Singapore,International Hub

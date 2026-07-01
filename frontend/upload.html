@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="api-url" content="http://localhost:8000">
+    <title>Upload &amp; Manage KB — Airline Bot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Rebuild loading overlay -->
+    <div id="rebuild-overlay" class="rebuild-overlay">
+        <div class="rebuild-card">
+            <div class="rebuild-spinner"></div>
+            <p class="rebuild-title">Building Knowledge Base</p>
+            <p class="rebuild-sub" id="rebuild-progress-text">Loading documents…</p>
+            <div class="rebuild-progress">
+                <div class="rebuild-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebar-toggle" title="Toggle sidebar">
+                <i class="fa-solid fa-angles-right"></i>
+            </button>
+
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <i class="fa-solid fa-plane"></i>
+                </div>
+                <span class="label">AirlineBot</span>
+            </div>
+
+            <a class="sidebar-item" href="index.html" title="Chat">
+                <i class="fa-solid fa-comments"></i>
+                <span class="label">Chat</span>
+            </a>
+            <a class="sidebar-item active" href="upload.html" title="Manage Knowledge Base">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span class="label">Upload</span>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-bottom">
+                <button class="sidebar-item" id="theme-toggle" title="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                    <span class="label">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+
+            <!-- Page header -->
+            <div class="dashboard-header">
+                <div class="dashboard-header-inner">
+                    <div class="dashboard-title">Knowledge Base Management</div>
+                    <div class="dashboard-subtitle">Upload documents to train the support agent · supports PDF, DOCX, CSV, JSON, HTML, Markdown and more</div>
+                </div>
+            </div>
+
+            <div class="dashboard-body">
+
+                <!-- Status banner -->
+                <div id="status-banner" class="status-banner kb-status-bar" hidden></div>
+
+                <!-- ── Upload section (primary action) ───────────────── -->
+                <section>
+                    <div class="section-header">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span class="section-title">Upload Documents</span>
+                    </div>
+
+                    <div class="upload-card">
+
+                        <!-- Mode selector -->
+                        <div class="mode-selector">
+                            <label class="mode-option">
+                                <input type="radio" name="mode" value="add" checked>
+                                <i class="fa-solid fa-plus"></i> Add
+                                <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;margin-left:4px">— keep existing</span>
+                            </label>
+                            <label class="mode-option">
+                                <input type="radio" name="mode" value="replace">
+                                <i class="fa-solid fa-arrows-rotate"></i> Replace
+                                <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;margin-left:4px">— wipe &amp; rebuild</span>
+                            </label>
+                        </div>
+
+                        <!-- Allowed types hint -->
+                        <div class="allowed-hint" id="allowed-hint">
+                            <i class="fa-solid fa-circle-info" style="color:var(--accent);margin-right:5px"></i>
+                            Loading supported file types…
+                        </div>
+
+                        <!-- Drop zone -->
+                        <div id="drop-zone" class="drop-zone">
+                            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                            <p class="drop-text">Drag &amp; drop files here, or <span class="browse-link">browse</span></p>
+                            <p class="drop-hint">No file limit · Max 10 MB per file</p>
+                            <input type="file" id="file-input" multiple hidden>
+                        </div>
+
+                        <ul id="selected-files" class="selected-files"></ul>
+
+                        <button id="upload-btn" class="primary-btn" disabled>
+                            <i class="fa-solid fa-upload"></i> Upload &amp; Rebuild Knowledge Base
+                        </button>
+
+                    </div>
+                </section>
+
+                <!-- ── Overview stats ─────────────────────────────────── -->
+                <section>
+                    <div class="section-header">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <span class="section-title">Overview</span>
+                    </div>
+                    <div class="stats-grid" id="stats-grid">
+                        <!-- Injected by upload.js -->
+                    </div>
+                </section>
+
+                <!-- ── Document library ───────────────────────────────── -->
+                <section>
+                    <div class="section-header">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span class="section-title">
+                            Document Library
+                            <span id="doc-count" style="font-weight:400;color:var(--text-muted);font-size:0.82rem;margin-left:6px"></span>
+                        </span>
+                    </div>
+                    <ul id="doc-list" class="doc-list"></ul>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="sidebar.js"></script>
+    <script src="upload.js"></script>
+</body>
+</html>
