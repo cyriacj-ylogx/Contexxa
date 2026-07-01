@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+export PYTHONPATH=/app/Modular_Code
+
 # Seed the docs volume with initial documents on first run
 if [ -z "$(ls -A /app/docs 2>/dev/null)" ]; then
     echo "[entrypoint] Fresh volume detected — seeding /app/docs with initial documents..."
