@@ -29,6 +29,7 @@ VOLUME ["/app/docs", "/app/data"]
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app/Modular_Code \
     DOCX_DOC_PATH=/app/docs \
     PERSIST_DIRECTORY=/app/data
 
