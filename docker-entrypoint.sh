@@ -10,4 +10,4 @@ else
     echo "[entrypoint] /app/docs already has $(ls /app/docs | wc -l) documents, skipping seed."
 fi
 
-exec uvicorn api:app --host 0.0.0.0 --port 8000
+exec uvicorn api:app --host 0.0.0.0 --port 8000 --app-dir /app/Modular_Code
